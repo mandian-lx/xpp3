@@ -42,7 +42,7 @@ Group:          Development/Java
 Source0:        http://www.extreme.indiana.edu/dist/java-repository/xpp3/distributions/xpp3-%{oversion}_src.tgz
 Patch0:         %{name}-link-docs-locally.patch
 Requires:       jpackage-utils >= 0:1.6
-Requires:       java >= 0:1.4.2
+BuildRequires:  java-devel
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
@@ -52,7 +52,6 @@ BuildRequires:  /usr/bin/perl
 Requires:       jpackage-utils
 Requires:       junit
 Requires:       xml-commons-apis
-Requires:       java
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
