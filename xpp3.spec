@@ -142,6 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}-xpath.jar
 %{_javadir}/%{name}-xpath-%{version}.jar
+%if %{gcj_support}
 %dir %{_libdir}/gcj/%{name}
 %attr(-,root,root) %{_libdir}/gcj/%{name}/*
 %endif
