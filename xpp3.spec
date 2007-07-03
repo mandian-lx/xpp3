@@ -30,6 +30,7 @@
 
 %define oversion 1.1.3_8
 %define jversion 1.4.3_8
+%define gcj_support 1
 
 Summary:        XML Pull Parser
 Name:           xpp3
@@ -52,7 +53,14 @@ BuildRequires:  /usr/bin/perl
 Requires:       jpackage-utils
 Requires:       junit
 Requires:       xml-commons-apis
+%if %{gcj_support}
+Requires(post): java-gcj-compat
+Requires(postun): java-gcj-compat
+BuildRequires:  java-gcj-compat-devel
+%else
 BuildArch:      noarch
+BuildRequires:  java-devel
+%endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
@@ -112,8 +120,20 @@ cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 
 rm -rf doc/{build.txt,api}
 
+%if %{gcj_support}
+%{_bindir}/aot-compile-rpm
+%endif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%if %{gcj_support}
+%post
+%{update_gcjdb}
+
+%postun
+%{clean_gcjdb}
+%endif
 
 %files
 %defattr(0644,root,root,0755)
@@ -122,6 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}-xpath.jar
 %{_javadir}/%{name}-xpath-%{version}.jar
+%dir %{_libdir}/gcj/%{name}
+%attr(-,root,root) %{_libdir}/gcj/%{name}/*
+%endif
 
 %files minimal
 %defattr(0644,root,root,0755)
