@@ -35,7 +35,7 @@
 Summary:        XML Pull Parser
 Name:           xpp3
 Version:        1.1.3.8
-Release:        %mkrel 1.1
+Release:        %mkrel 1.2
 Epoch:          0
 License:        Apache License
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
@@ -48,11 +48,11 @@ BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
 BuildRequires:  xerces-j2
-BuildRequires:  xml-commons-apis
+BuildRequires:  xml-commons-jaxp-1.3-apis
 BuildRequires:  /usr/bin/perl
 Requires:       jpackage-utils
 Requires:       junit
-Requires:       xml-commons-apis
+Requires:       xml-commons-jaxp-1.3-apis
 %if %{gcj_support}
 Requires(post): java-gcj-compat
 Requires(postun): java-gcj-compat
@@ -74,7 +74,7 @@ Summary:        Minimal XML Pull Parser
 Group:          Development/Java
 Requires:       jpackage-utils
 Requires:       junit
-Requires:       xml-commons-apis
+Requires:       xml-commons-jaxp-1.3-apis
 Requires:       java
 
 %description minimal
@@ -97,7 +97,7 @@ find . -name "*.jar" -exec rm -f {} \;
 %{__perl} -pi -e 's/1\.[12]/1.4/g;' build.xml
 
 %build
-export CLASSPATH=$(build-classpath xerces-j2 xml-commons-apis junit)
+export CLASSPATH=$(build-classpath xerces-j2 xml-commons-jaxp-1.3-apis junit)
 %{ant} xpp3 junit apidoc
 
 %install
