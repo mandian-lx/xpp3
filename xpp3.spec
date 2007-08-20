@@ -49,7 +49,7 @@ BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
 BuildRequires:  xerces-j2
 BuildRequires:  xml-commons-jaxp-1.3-apis
-BuildRequires:  /usr/bin/perl
+BuildRequires:  perl-base
 Requires:       jpackage-utils
 Requires:       junit
 Requires:       xml-commons-jaxp-1.3-apis
