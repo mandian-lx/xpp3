@@ -35,7 +35,7 @@
 Summary:        XML Pull Parser
 Name:           xpp3
 Version:        1.1.3.8
-Release:        %mkrel 1.2
+Release:        %mkrel 1.3
 Epoch:          0
 License:        Apache License
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
@@ -54,8 +54,6 @@ Requires:       jpackage-utils
 Requires:       junit
 Requires:       xml-commons-jaxp-1.3-apis
 %if %{gcj_support}
-Requires(post): java-gcj-compat
-Requires(postun): java-gcj-compat
 BuildRequires:  java-gcj-compat-devel
 %else
 BuildArch:      noarch
