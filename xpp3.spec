@@ -59,7 +59,6 @@ BuildRequires:  java-gcj-compat-devel
 BuildArch:      noarch
 BuildRequires:  java-devel
 %endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 Xml Pull Parser 3rd Edition (XPP3) MXP1 is a new XmlPull 
