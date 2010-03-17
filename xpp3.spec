@@ -35,7 +35,7 @@
 Summary:        XML Pull Parser
 Name:           xpp3
 Version:        1.1.3.8
-Release:        %mkrel 1.5
+Release:        %mkrel 1.6
 Epoch:          0
 License:        Apache License
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
