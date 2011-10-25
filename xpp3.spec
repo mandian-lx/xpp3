@@ -29,42 +29,39 @@
 #
 
 %define oversion 1.1.3_8
-%define jversion 1.4.3_8
-%define gcj_support 1
 
 Summary:        XML Pull Parser
 Name:           xpp3
 Version:        1.1.3.8
-Release:        %mkrel 1.7
-Epoch:          0
-License:        Apache License
+Release:        5
+License:        ASL 1.1
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
 Group:          Development/Java
 Source0:        http://www.extreme.indiana.edu/dist/java-repository/xpp3/distributions/xpp3-%{oversion}_src.tgz
+Source1:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3/1.1.3.4.O/xpp3-1.1.3.4.O.pom
+Source2:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3_xpath/1.1.3.4.O/xpp3_xpath-1.1.3.4.O.pom
+Source3:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3_min/1.1.3.4.O/xpp3_min-1.1.3.4.O.pom
 Patch0:         %{name}-link-docs-locally.patch
 Requires:       jpackage-utils >= 0:1.6
-BuildRequires:  java-devel
-BuildRequires:  java-rpmbuild >= 0:1.6
+Requires:       java >= 0:1.4.2
+BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
-BuildRequires:  xerces-j2
-BuildRequires:  xml-commons-jaxp-1.3-apis
-BuildRequires:  perl-base
+BuildRequires:  xml-commons-apis
+BuildRequires:  /usr/bin/perl
 Requires:       jpackage-utils
 Requires:       junit
-Requires:       xml-commons-jaxp-1.3-apis
-%if %{gcj_support}
-BuildRequires:  java-gcj-compat-devel
-%else
+Requires:       xml-commons-apis
+Requires:       java
+Requires(post):   jpackage-utils
+Requires(postun): jpackage-utils
+
 BuildArch:      noarch
-BuildRequires:  java-devel
-%endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
-Xml Pull Parser 3rd Edition (XPP3) MXP1 is a new XmlPull 
-parsing engine that is based on ideas from XPP and in 
-particular XPP2 but completely revised and rewritten to 
+Xml Pull Parser 3rd Edition (XPP3) MXP1 is a new XmlPull
+parsing engine that is based on ideas from XPP and in
+particular XPP2 but completely revised and rewritten to
 take best advantage of latest JIT JVMs such as Hotspot in JDK 1.4.
 
 %package minimal
@@ -72,8 +69,10 @@ Summary:        Minimal XML Pull Parser
 Group:          Development/Java
 Requires:       jpackage-utils
 Requires:       junit
-Requires:       xml-commons-jaxp-1.3-apis
+Requires:       xml-commons-apis
 Requires:       java
+Requires(post):   jpackage-utils
+Requires(postun): jpackage-utils
 
 %description minimal
 Minimal XML pull parser implementation.
@@ -81,6 +80,7 @@ Minimal XML pull parser implementation.
 %package javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Java
+Requires:       jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
@@ -92,65 +92,68 @@ find . -name "*.jar" -exec rm -f {} \;
 
 %patch0
 
-%{__perl} -pi -e 's/1\.[12]/1.4/g;' build.xml
-
 %build
-export CLASSPATH=$(build-classpath xerces-j2 xml-commons-jaxp-1.3-apis junit)
-%{ant} xpp3 junit apidoc
+export CLASSPATH=$(build-classpath xml-commons-apis junit)
+ant xpp3 junit apidoc
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 # jars
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
-cp -p build/%{name}-%{jversion}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-cp -p build/%{name}_min-%{jversion}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}-minimal-%{version}.jar
-cp -p build/%{name}_xpath-%{jversion}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}-xpath-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}.jar; \
-  do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+cp -p build/%{name}-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -p build/%{name}_min-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-minimal.jar
+cp -p build/%{name}_xpath-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-xpath.jar
 
 # javadoc
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 rm -rf doc/{build.txt,api}
 
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -pm 644 %{SOURCE3} \
+    %{buildroot}%{_mavenpomdir}/JPP-%{name}-minimal.pom
+%add_to_maven_depmap %{name} %{name}_min %{version} JPP %{name}-minimal
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+mv %{buildroot}%{_mavendepmapfragdir}/%{name} %{buildroot}%{_mavendepmapfragdir}/%{name}-minimal
+install -pm 644 %{SOURCE1} \
+    %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%add_to_maven_depmap %{name} %{name} %{version} JPP %{name}
 
-%if %{gcj_support}
+install -pm 644 %{SOURCE2} \
+    %{buildroot}%{_mavenpomdir}/JPP-%{name}-xpath.pom
+%add_to_maven_depmap %{name} %{name}_xpath %{version} JPP %{name}-xpath
+
+
 %post
-%{update_gcjdb}
+%update_maven_depmap
 
 %postun
-%{clean_gcjdb}
-%endif
+%update_maven_depmap
+
+%post minimal
+%update_maven_depmap
+
+%postun minimal
+%update_maven_depmap
 
 %files
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc README.html LICENSE.txt doc/*
 %{_javadir}/%{name}.jar
-%{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}-xpath.jar
-%{_javadir}/%{name}-xpath-%{version}.jar
-%if %{gcj_support}
-%dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/*
-%endif
+%{_mavenpomdir}/JPP-%{name}-xpath.pom
+%{_mavenpomdir}/JPP-%{name}.pom
+%{_mavendepmapfragdir}/%{name}
 
 %files minimal
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc LICENSE.txt
+%{_mavendepmapfragdir}/%{name}-minimal
+%{_mavenpomdir}/JPP-%{name}-minimal.pom
 %{_javadir}/%{name}-minimal.jar
-%{_javadir}/%{name}-minimal-%{version}.jar
 
 %files javadoc
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc %{_javadocdir}/*
+
