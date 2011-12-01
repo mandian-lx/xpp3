@@ -99,14 +99,14 @@ ant xpp3 junit apidoc
 %install
 
 # jars
-mkdir -p $RPM_BUILD_ROOT%{_javadir}
-cp -p build/%{name}-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
-cp -p build/%{name}_min-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-minimal.jar
-cp -p build/%{name}_xpath-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-xpath.jar
+mkdir -p %{buildroot}%{_javadir}
+cp -p build/%{name}-%{oversion}.jar %{buildroot}%{_javadir}/%{name}.jar
+cp -p build/%{name}_min-%{oversion}.jar %{buildroot}%{_javadir}/%{name}-minimal.jar
+cp -p build/%{name}_xpath-%{oversion}.jar %{buildroot}%{_javadir}/%{name}-xpath.jar
 
 # javadoc
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+mkdir -p %{buildroot}%{_javadocdir}/%{name}
+cp -pr doc/api/* %{buildroot}%{_javadocdir}/%{name}
 
 rm -rf doc/{build.txt,api}
 
