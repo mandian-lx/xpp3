@@ -99,14 +99,14 @@ ant xpp3 junit apidoc
 %install
 
 # jars
-mkdir -p %{buildroot}%{_javadir}
-cp -p build/%{name}-%{oversion}.jar %{buildroot}%{_javadir}/%{name}.jar
-cp -p build/%{name}_min-%{oversion}.jar %{buildroot}%{_javadir}/%{name}-minimal.jar
-cp -p build/%{name}_xpath-%{oversion}.jar %{buildroot}%{_javadir}/%{name}-xpath.jar
+mkdir -p $RPM_BUILD_ROOT%{_javadir}
+cp -p build/%{name}-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -p build/%{name}_min-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-minimal.jar
+cp -p build/%{name}_xpath-%{oversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-xpath.jar
 
 # javadoc
-mkdir -p %{buildroot}%{_javadocdir}/%{name}
-cp -pr doc/api/* %{buildroot}%{_javadocdir}/%{name}
+mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr doc/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 rm -rf doc/{build.txt,api}
 
@@ -157,3 +157,86 @@ install -pm 644 %{SOURCE2} \
 %defattr(-,root,root,-)
 %doc %{_javadocdir}/*
 
+
+
+%changelog
+* Sun Nov 27 2011 Guilherme Moro <guilherme@mandriva.com> 1.1.3.8-7
++ Revision: 734312
+- rebuild
+- imported package xpp3
+
+* Sat Dec 04 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.1.3.8-1.7
++ Revision: 608232
+- rebuild
+
+* Wed Mar 17 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.1.3.8-1.6mdv2010.1
++ Revision: 524462
+- rebuilt for 2010.1
+
+* Sat Mar 07 2009 Antoine Ginies <aginies@mandriva.com> 0:1.1.3.8-1.5mdv2009.1
++ Revision: 350812
+- rebuild
+
+* Fri Dec 21 2007 Olivier Blin <blino@mandriva.org> 0:1.1.3.8-1.4mdv2009.0
++ Revision: 136618
+- restore BuildRoot
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - kill re-definition of %%buildroot on Pixel's request
+
+* Sun Dec 16 2007 Anssi Hannula <anssi@mandriva.org> 0:1.1.3.8-1.4mdv2008.1
++ Revision: 121062
+- buildrequire java-rpmbuild, i.e. build with icedtea on x86(_64)
+
+* Sat Sep 15 2007 Anssi Hannula <anssi@mandriva.org> 0:1.1.3.8-1.3mdv2008.0
++ Revision: 87313
+- rebuild to filter out autorequires of GCJ AOT objects
+- remove unnecessary Requires(post) on java-gcj-compat
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - kill file require on perl-base
+
+* Wed Jul 18 2007 Anssi Hannula <anssi@mandriva.org> 0:1.1.3.8-1.2mdv2008.0
++ Revision: 53226
+- use xml-commons-jaxp-1.3-apis explicitely instead of the generic
+  xml-commons-apis which is provided by multiple packages (see bug #31473)
+
+* Tue Jul 03 2007 David Walluck <walluck@mandriva.org> 0:1.1.3.8-1.1mdv2008.0
++ Revision: 47362
+- fix gcj support
+- gcj support
+- BuildRequires: java-devel
+- remove Requires: java
+- Import xpp3
+
+
+
+* Mon Feb 12 2007 Fernando Nasser <fnasser@redhat.com> - 0:1.1.3.8-1jpp.1
+- Import
+- Fix per Fedora spec
+
+* Mon Feb 12 2007 Fernando Nasser <fnasser@redhat.com> - 0:1.1.3.8-1jpp
+- Upgrade to 1.1.3.8
+- Remove vendor and distribution tags
+
+* Mon Feb 27 2006 Fernando Nasser <fnasser@redhat.com> - 0:1.1.3.4-1.o.2jpp
+- First JPP 1.7 build
+
+* Tue Dec 20 2005 Ralph Apel <r.apel at r-apel.de> - 0:1.1.3.4-1.o.1jpp
+- Upgrade to 1.1.3.4-O
+- Now includes xpath support
+
+* Thu Aug 26 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.1.3.4-1.d.2jpp
+- Build with ant-1.6.2
+
+* Tue Jun 01 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.1.3.4-1.d.1jpp
+- Update to 1.1.3.4
+
+* Mon May  5 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.1.2-1.a.3jpp
+- Fix non-versioned javadoc symlinking.
+
+* Mon Apr 21 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.1.2-1.a.2jpp
+- Include non-versioned javadoc symlink.
+
+* Tue Apr  1 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.1.2-1.a.1jpp
+- First JPackage release.
