@@ -33,7 +33,7 @@
 Summary:        XML Pull Parser
 Name:           xpp3
 Version:        1.1.3.8
-Release:        9
+Release:        10
 License:        ASL 1.1
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
 Group:          Development/Java
