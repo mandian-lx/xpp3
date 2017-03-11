@@ -16,7 +16,7 @@ Source4:        %{name}-%{oversion}-OSGI-MANIFEST.MF
 Source5:        %{name}-minimal-%{oversion}-OSGI-MANIFEST.MF
 Patch0:         %{name}-link-docs-locally.patch
 Requires:       java-headless
-BuildRequires:  javapackages-local
+BuildRequires:  jpackage-utils
 BuildRequires:  zip
 BuildRequires:  ant
 BuildRequires:  junit
