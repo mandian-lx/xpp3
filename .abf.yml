@@ -1,2 +1,8 @@
 sources:
-  xpp3-1.1.3_8_src.tgz: 75ea930419bdc88d12deb71f97b332d324662b1d
+  "xpp3-1.1.4c_src.tgz":  ee7e759d079f9fa035555d4976f0fc9c58a6a19f
+  "xpp3-1.1.4c.pom":        ab2e7aa30b06dc1a01218d17650e9966f65557da
+  "xpp3_min-1.1.4c.pom":    4d2f2cf4e7b090e4c0c3010c6cd27cdb45ca593e
+  "xpp3_xpath-1.1.4c.pom":  c7992f1d849c5e1a4ff7fa62f8e9462ef650d523
+  "xpp3-1.1.4c-OSGI-MANIFEST.MF":          949b26445ddc467d43b0a92cac07ca79b0ba9c7b
+  "xpp3-minimal-1.1.4c-OSGI-MANIFEST.MF":  97069c694efc14e0520ca6cfbc5c5eba5d800a21
+
