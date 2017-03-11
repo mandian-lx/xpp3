@@ -1,26 +1,28 @@
 %{?_javapackages_macros:%_javapackages_macros}
-%define oversion 1.1.3_8
+%global oversion 1.1.4c
 
 Summary:        XML Pull Parser
 Name:           xpp3
-Version:        1.1.3.8
-Release:        10.1%{?dist}
-Epoch:          0
+Version:        1.1.4
+Release:        12.c
 License:        ASL 1.1
+Group:          Development/Java
 URL:            http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/index.html
 Source0:        http://www.extreme.indiana.edu/dist/java-repository/xpp3/distributions/xpp3-%{oversion}_src.tgz
-Source1:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3/1.1.3.4.O/xpp3-1.1.3.4.O.pom
-Source2:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3_xpath/1.1.3.4.O/xpp3_xpath-1.1.3.4.O.pom
-Source3:        http://mirrors.ibiblio.org/pub/mirrors/maven2/xpp3/xpp3_min/1.1.3.4.O/xpp3_min-1.1.3.4.O.pom
+Source1:        http://repo1.maven.org/maven2/xpp3/xpp3/%{oversion}/xpp3-%{oversion}.pom
+Source2:        http://repo1.maven.org/maven2/xpp3/xpp3_xpath/%{oversion}/xpp3_xpath-%{oversion}.pom
+Source3:        http://repo1.maven.org/maven2/xpp3/xpp3_min/%{oversion}/xpp3_min-%{oversion}.pom
+Source4:        %{name}-%{oversion}-OSGI-MANIFEST.MF
+Source5:        %{name}-minimal-%{oversion}-OSGI-MANIFEST.MF
 Patch0:         %{name}-link-docs-locally.patch
-Requires:       java
-BuildRequires:  jpackage-utils
+Requires:       java-headless
+BuildRequires:  javapackages-local
+BuildRequires:  zip
 BuildRequires:  ant
 BuildRequires:  junit
 BuildRequires:  xml-commons-apis
-Requires:       junit
 Requires:       xml-commons-apis
-Requires:       java
+Requires:       java-headless
 
 BuildArch:      noarch
 
@@ -32,9 +34,7 @@ take best advantage of latest JIT JVMs such as Hotspot in JDK 1.4.
 
 %package minimal
 Summary:        Minimal XML Pull Parser
-Requires:       junit
-Requires:       xml-commons-apis
-Requires:       java
+Requires:       java-headless
 
 %description minimal
 Minimal XML pull parser implementation.
@@ -49,12 +49,36 @@ Javadoc for %{name}.
 %setup -q -n %{name}-%{oversion}
 # remove all binary libs
 find -name \*.jar -delete
+# Remove class bundled from Axis (now it's bundled in JRE)
+rm -rf src/java/builder/javax
 
 %patch0
+
+# "src/java/addons_tests" does not exist
+sed -i 's|depends="junit_main,junit_addons"|depends="junit_main"|' build.xml
 
 %build
 export CLASSPATH=$(build-classpath xml-commons-apis junit)
 ant xpp3 junit apidoc
+
+# Add OSGi metadata
+pushd build
+mkdir META-INF
+unzip -o %{name}-%{oversion}.jar META-INF/MANIFEST.MF
+cat %{SOURCE4} >> META-INF/MANIFEST.MF
+sed -i '/^\r$/d' META-INF/MANIFEST.MF
+zip -u %{name}-%{oversion}.jar META-INF/MANIFEST.MF
+rm -fr META-INF
+popd
+
+pushd build
+mkdir META-INF
+unzip -o %{name}_min-%{oversion}.jar META-INF/MANIFEST.MF
+cat %{SOURCE5} >> META-INF/MANIFEST.MF
+sed -i '/^\r$/d' META-INF/MANIFEST.MF
+zip -u %{name}_min-%{oversion}.jar META-INF/MANIFEST.MF
+rm -fr META-INF
+popd
 
 %install
 install -d -m 755 %{buildroot}%{_javadir}
@@ -83,15 +107,54 @@ install -p -m 644 %{SOURCE3} %{buildroot}%{_mavenpomdir}/JPP-%{name}-minimal.pom
 cp -pr doc/api/* %{buildroot}%{_javadocdir}/%{name}
 
 %files -f .mfiles
-%doc README.html LICENSE.txt doc/*
+%doc README.html doc/*
+%doc LICENSE.txt
 
 %files minimal -f .mfiles-minimal
 %doc LICENSE.txt
 
 %files javadoc
 %doc %{_javadocdir}/%{name}
+%doc LICENSE.txt
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.4-12.c
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Wed Mar 23 2016 Severin Gehwolf <sgehwolf@redhat.com> - 1.1.4-11.c
+- Add OSGi metadata.
+
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.4-10.c
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Tue Jan 19 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.1.4-9.c
+- Remove bundled javax.xml.namespace.QName class
+- Resolves: rhbz#1299679
+
+* Thu Dec 24 2015 gil cattaneo <puntogil@libero.it> 1.1.4-8.c
+- convert %%defines to %%global
+
+* Tue Jul 14 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.1.4-7.c
+- Add build-requires on javapackages-local
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.4-6.c
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Fri Feb 13 2015 gil cattaneo <puntogil@libero.it> 1.1.4-5.c
+- introduce license macro
+
+* Tue Dec 9 2014 Alexander Kurtakov <akurtako@redhat.com> 1.1.4-4.c
+- Drop useless Requires.
+
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.4-3.c
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.1.4-2.c
+- Use Requires: java-headless rebuild (#1067528)
+
+* Wed Feb 19 2014 Michal Srb <msrb@redhat.com> - 1.1.4-1.c
+- Update to upstream version 1.1.4c
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.1.3.8-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
